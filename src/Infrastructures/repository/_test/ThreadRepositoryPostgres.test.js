@@ -2,6 +2,8 @@ const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const pool = require('../../database/postgres/pool');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const AddedThread = require('../../../Domains/threads/entities/AddedThread');
+const NewThread = require('../../../Domains/threads/entities/NewThread');
 
 describe('ThreadRepositoryPostgres', () => {
   afterEach(async () => {
@@ -12,7 +14,7 @@ describe('ThreadRepositoryPostgres', () => {
   afterAll(async () => {
     await pool.end();
   });
-
+  const fakeIdGenerator = () => '123';
   describe('addThread', () => {
     it('should persist new thread and return added thread correctly', async () => {
       /**
@@ -24,19 +26,18 @@ describe('ThreadRepositoryPostgres', () => {
        * untuk mengecek data `thread` yang ada di database berdasarkan id thread.
        */
       // Arrange
-      const threadRepository = new ThreadRepositoryPostgres(pool, nanoid);
+      const threadRepository = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+      const sampleThread = new NewThread({
+        owner: 'user-123',
+        title: 'title test',
+        body: 'body test',
+    });
 
       // Action
-      const addedThread = await threadRepository.addThread(new NewThread(sampleThread));
-      expect(addedThread).toBeInstanceOf(AddedThread);
-      sampleThread.id = addedThread.id;
-
-      // Assert
-      const thread = await ThreadTableTestHelper.findThreadById(addedThread.id);
-      expect(thread).toHaveProperty('id');
-      expect(thread.title).toStrictEqual('Title 1');
-      expect(thread.body).toStrictEqual('Body 1');
-      expect(thread.owner).toStrictEqual(user.id);
+      const addedThread = await threadRepository.addThread(sampleThread);
+      const thread = await ThreadsTableTestHelper.findThreadById('thread-123');
+      expect(thread).toBeDefined();
+      expect(addedThread).toStrictEqual(new AddedThread({ id: 'thread-123', title: 'title test', owner: 'user-123',}));
     });
   });
 

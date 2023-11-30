@@ -38,7 +38,7 @@ describe('AddedThread entities', () => {
       owner: 'user-123',
     };
 
-    // Action
+    // Actionf
     const addedThread = new AddedThread(payload);
 
     // Assert
