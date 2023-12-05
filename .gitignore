@@ -4,3 +4,6 @@ package-lock.json
 coverage
 AbdulLatif.zip
 .env
+auth-api-app-server.pem
+package-lock.json
+config/database/test.json

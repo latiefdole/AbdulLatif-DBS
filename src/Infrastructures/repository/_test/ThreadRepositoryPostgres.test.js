@@ -26,6 +26,7 @@ describe('ThreadRepositoryPostgres', () => {
        * untuk mengecek data `thread` yang ada di database berdasarkan id thread.
        */
       // Arrange
+      await UsersTableTestHelper.addUser({});
       const threadRepository = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
       const sampleThread = new NewThread({
         owner: 'user-123',
