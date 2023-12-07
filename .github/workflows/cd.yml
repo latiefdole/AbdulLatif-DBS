@@ -18,6 +18,7 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         script: |
           cd ~/AbdulLatif-DBS
-          git pull origin master
-          docker-compose -p forum up -d
-          docker exec forum npm run migrate up
+          git pull origin main
+          npm install
+          npm run migrate up
+          pm2 restart auth-api
