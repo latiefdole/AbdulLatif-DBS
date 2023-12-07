@@ -17,8 +17,8 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         password: ${{ secrets.SSH_PASSWORD }}
         script: |
-          cd ~/AbdulLatif-DBS
+          cd ~/abdullatif/AbdulLatif-DBS
           git pull origin main
           npm install
           npm run migrate up
-          pm2 restart forum-api
+          pm2 restart abdullatif-api
