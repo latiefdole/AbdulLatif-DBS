@@ -3,7 +3,7 @@ name: Continuous Integration Latif
 on: 
   pull_request:
     branches:
-      - master
+      - main
  
 jobs:
   test:
