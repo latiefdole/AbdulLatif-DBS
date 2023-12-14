@@ -31,7 +31,7 @@ class CommentsHandler {
     return response;
   }
 
-  async deleteCommentHandler(request) {
+  async deleteCommentHandler(request, h) {
     const { id: owner } = request.auth.credentials;
     const { threadId, commentId: id } = request.params;
 
@@ -42,10 +42,45 @@ class CommentsHandler {
      * Untuk mendapatkan useCase, pastikan Anda memanfaatkan method `this._container.getInstance`
      */
 
-    return {
-      status: 'success',
-      message: 'Komentar berhasil dihapus',
-    };
+      // Menginisialisasi instance dari DeleteCommentUseCase
+      const deleteUseCase = this._container.getInstance(DeleteCommentUseCase.name);
+  
+      try {
+        // Eksekusi DeleteCommentUseCase untuk menghapus komentar
+        await deleteUseCase.execute({ threadId, id, owner });
+  
+        return {
+          status: 'success',
+          message: 'Komentar berhasil dihapus',
+        };
+      } catch (error) {
+        // Tangani error yang mungkin terjadi dari penghapusan komentar
+        // Misalnya, tangkap error dan kembalikan response error jika terjadi kesalahan
+        
+        if (error.message == "DELETE_COMMENT_USE_CASE.COMMENT_NOT_OWNED"){
+          const response = h.response({
+            status: 'fail',
+            message: "Missing Authentication",  
+          });
+          response.code(403);
+          return response;
+        }else if (error.message == "DELETE_COMMENT_USE_CASE.COMMENT_NOT_FOUND"){
+          const response = h.response({
+            status: 'fail',
+            message: "Comment Not Found",  
+          });
+          response.code(404);
+          return response;
+        }
+        // return {
+        //   status: 'error',
+        //   message: error.message,
+        // };
+      }
+    // return {
+    //   status: 'success',
+    //   message: 'Komentar berhasil dihapus',
+    //};
   }
 }
 
